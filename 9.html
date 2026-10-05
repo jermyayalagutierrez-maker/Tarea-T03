@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Clientes - Control 09</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f0f0; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .container { background: white; padding: 25px; border-radius: 8px; width: 100%; max-width: 420px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; }
+        input[type="text"] { width: 100%; padding: 10px; margin: 10px 0 15px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; color: white; background: #007bff; }
+        #resultadoBusqueda { font-weight: bold; margin-top: 15px; padding: 10px; border-radius: 4px; text-align: center; }
+        .sugerencias { margin-top: 20px; padding: 15px; background: #e9f7ef; border-left: 4px solid #27ae60; border-radius: 4px; }
+        .sugerencias h4 { margin: 0 0 10px 0; color: #1e8449; }
+        .sugerencias ul { padding-left: 20px; margin: 0; }
+        .sugerencias li { margin-bottom: 10px; font-size: 0.9em; list-style-type: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Consulta de Cartera de Clientes</h2>
+        <label for="clienteBuscarInput">Nombre del Cliente a buscar:</label>
+        <input type="text" id="clienteBuscarInput" placeholder="Ej. Brayan soto">
+
+        <button type="button" onclick="buscarCliente()">Buscar en Base de Datos</button>
+
+        <p id="resultadoBusqueda"></p>
+
+        <div class="sugerencias">
+            <h4>Sugerencias de Mejora del Sistema:</h4>
+            <ul>
+                <li>
+                    <strong>1. Búsqueda por coincidencia parcial:</strong><br>
+                    <em>Sustento:</em> Permite encontrar al cliente aunque no se escriba su nombre exacto o completo.
+                </li>
+                <li>
+                    <strong>2. Opción para registrar nuevos clientes:</strong><br>
+                    <em>Sustento:</em> Si la búsqueda no arroja resultados, permite agregar al cliente de inmediato.
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const baseDatosClientes = ["Jeremy ayala", "makanaki ", "Maria Gomez", "Carlos Ruiz", "Comercial Beta"];
+        const _ = id => document.getElementById(id);
+
+        function buscarCliente() {
+            const query = _("clienteBuscarInput").value.trim().toLowerCase();
+
+            if (!query) {
+                alert("Escriba un nombre para consultar.");
+                _("clienteBuscarInput").focus();
+                return;
+            }
+
+            //JavaScript
+            const encontrado = baseDatosClientes.some(cliente => cliente.toLowerCase() === query);
+            const originalInput = _("clienteBuscarInput").value.trim();
+
+            if (encontrado) {
+                _("resultadoBusqueda").style.color = "green";
+                _("resultadoBusqueda").style.background = "#e8f5e9";
+                _("resultadoBusqueda").innerText = `Estado: El cliente '${originalInput}' SÍ está registrado.`;
+            } else {
+                _("resultadoBusqueda").style.color = "red";
+                _("resultadoBusqueda").style.background = "#ffebee";
+                _("resultadoBusqueda").innerText = `Estado: El cliente '${originalInput}' NO se encuentra en la base de datos.`;
+            }
+
+            _("clienteBuscarInput").focus();
+        }
+    </script>
+
+</body>
+</html>

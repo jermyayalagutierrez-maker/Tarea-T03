@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva de Boletos - Control 10</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f0f0; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .container { background: white; padding: 25px; border-radius: 8px; width: 100%; max-width: 400px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; }
+        input[type="text"], input[type="number"] { width: 100%; padding: 10px; margin: 5px 0 12px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        button { flex: 1; padding: 10px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; color: white; background: #007bff; }
+        button:last-child { background: #28a745; }
+        #resultadoReserva { font-weight: bold; color: green; margin-top: 10px; }
+        .boleto-item { background-color: #f9f9f9; border: 1px dashed #666; padding: 10px; margin-top: 8px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Venta de Pasajes</h2>
+        <p>Asientos Disponibles en el Autobús: <strong id="stockBoletos">5</strong></p>
+
+        <label for="nombreInput">Nombres del Pasajero:</label>
+        <input type="text" id="nombreInput" placeholder="Ej. Juan">
+
+        <label for="apellidoInput">Apellidos del Pasajero:</label>
+        <input type="text" id="apellidoInput" placeholder="Ej. Pérez Gómez">
+
+        <label for="edadInput">Edad del Pasajero:</label>
+        <input type="number" id="edadInput" placeholder="Ej. 25">
+
+        <div class="btn-group">
+            <button onclick="agregarPasajero()">1. Agregar Pasajero</button>
+            <button onclick="procesarReserva()">2. Emitir Boletos</button>
+        </div>
+
+        <p id="resultadoReserva"></p>
+        
+        <h3>Pasajeros Registrados en Espera:</h3>
+        <ul id="listaPasajeros"></ul>
+
+        <h3>Boletos Emitidos:</h3>
+        <div id="boletosEmitidos"></div>
+    </div>
+
+    <script>
+        let asientosDisponibles = 5;
+        let listaPasajerosTemp = [];
+        const _ = id => document.getElementById(id);
+
+        function agregarPasajero() {
+            const nombre = _("nombreInput").value.trim();
+            const apellido = _("apellidoInput").value.trim();
+            const edad = parseInt(_("edadInput").value);
+
+            if (!nombre || !apellido || isNaN(edad) || edad <= 0) {
+                alert("Ingrese todos los datos válidos del pasajero (Nombre, Apellido y Edad).");
+                return;
+            }
+
+            if (listaPasajerosTemp.length >= asientosDisponibles) {
+                alert(`No puede registrar más pasajeros que los asientos disponibles (${asientosDisponibles}).`);
+                return;
+            }
+
+            listaPasajerosTemp.push({ nombre, apellido, edad });
+            _("nombreInput").value = ""; _("apellidoInput").value = ""; _("edadInput").value = "";
+
+            actualizarListaEspera();
+            _("nombreInput").focus();
+        }
+
+        function actualizarListaEspera() {
+            _("listaPasajeros").innerHTML = listaPasajerosTemp
+                .map(p => `<li>${p.nombre} ${p.apellido} (${p.edad} años)</li>`)
+                .join("");
+        }
+
+        function procesarReserva() {
+            const solicitados = listaPasajerosTemp.length;
+
+            if (solicitados === 0) return alert("Primero agregue al menos un pasajero antes de emitir boletos.");
+            if (solicitados > asientosDisponibles) return _("resultadoReserva").innerText = "No hay suficientes asientos disponibles.";
+
+            _("boletosEmitidos").innerHTML = listaPasajerosTemp.map((p, index) => {
+                asientosDisponibles--;
+                return `<div class="boleto-item">
+                            <strong>BOLETO N° ${index + 1}</strong><br>
+                            Pasajero: ${p.nombre} ${p.apellido}<br>
+                            Edad: ${p.edad} años
+                        </div>`;
+            }).join("");
+
+            _("stockBoletos").innerText = asientosDisponibles;
+            _("resultadoReserva").innerText = `¡Compra exitosa! Se emitieron ${solicitados} boleto(s).`;
+            
+            listaPasajerosTemp = [];
+            actualizarListaEspera();
+
+            if (asientosDisponibles === 0) {
+                _("resultadoReserva").innerText += " (¡Atención: Se han agotado los asientos!)";
+            }
+        }
+    </script>
+
+</body>
+</html>

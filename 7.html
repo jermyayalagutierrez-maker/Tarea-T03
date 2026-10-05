@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carga de Productos - Control 07</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f0f0; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: white; padding: 25px; border-radius: 8px; width: 100%; max-width: 380px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; }
+        input[type="text"] { width: 100%; padding: 10px; margin: 10px 0 15px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn-group { display: flex; gap: 10px; }
+        button { flex: 1; padding: 10px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; color: white; background: #28a745; }
+        button:last-child { background: #dc3545; }
+        #estadoInventario { font-weight: bold; color: #155724; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Registro de Productos</h2>
+        <label for="productoInput">Nombre del Producto:</label>
+        <input type="text" id="productoInput" placeholder="Ej. Teclado USB">
+
+        <div class="btn-group">
+            <button onclick="agregarProducto()">Guardar</button>
+            <button onclick="cerrarLote()">Finalizar Carga</button>
+        </div>
+
+        <h3>Productos Guardados:</h3>
+        <ul id="listaProductos"></ul>
+        <p id="estadoInventario"></p>
+    </div>
+
+    <script>
+        let inventario = [];
+        // Helper corto para obtener elementos por su ID
+        const _ = id => document.getElementById(id);
+
+        function agregarProducto() {
+            const nombre = _("productoInput").value.trim();
+
+            if (!nombre) {
+                alert("Ingrese un nombre válido de producto.");
+                _("productoInput").focus();
+                return;
+            }
+
+            inventario.push(nombre);
+            _("productoInput").value = "";
+            mostrarLista();
+            _("productoInput").focus();
+        }
+
+        function mostrarLista() {
+            _("listaProductos").innerHTML = inventario
+                .map((prod, i) => `<li>Producto N° ${i + 1}: ${prod}</li>`)
+                .join("");
+        }
+
+        function cerrarLote() {
+            _("estadoInventario").innerText = `Lote cerrado con ${inventario.length} productos registrados.`;
+        }
+    </script>
+
+</body>
+</html>

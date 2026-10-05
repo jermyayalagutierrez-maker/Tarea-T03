@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso</title>
+    <style>
+        body { background: #f0f0f0; font-family: Arial; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .tarjeta { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px #0002; text-align: center; width: 300px; }
+        input, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; }
+        button { background: #007bff; color: #fff; font-weight: bold; cursor: pointer; }
+        .error { color: red; font-weight: bold; } .exito { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>  
+
+    <div class="tarjeta">   
+        <h2>Ingreso</h2>
+        <input type="password" id="clave" placeholder="Contraseña">
+        <button onclick="validar()">Validar</button>
+        <button style="background:#6c757d" onclick="limpiar()">Limpiar</button>
+        <p id="msg"></p>
+        <p id="intentos">Intentos fallidos: 0 / 3</p>
+    </div>
+
+    <script>
+        let fallos = 0, bloqueado = false;
+        const CLAVE = "admin123";
+        
+        // Función corta corregida para obtener los elementos por ID
+        const _ = id => document.getElementById(id);
+
+        function validar() {
+            if (bloqueado) return;
+            
+            if (_("clave").value === CLAVE) {
+                _("msg").className = "exito"; _("msg").innerText = "¡Acceso concedido!";
+                fallos = 0; _("intentos").innerText = "Intentos fallidos: 0 / 3";
+            } else {
+                fallos++;
+                _("intentos").innerText = `Intentos fallidos: ${fallos} / 3`;
+                if (fallos >= 3) {
+                    bloqueado = true; _("clave").disabled = true;
+                    _("msg").className = "error"; _("msg").innerText = "Acceso bloqueado.";
+                } else {
+                    _("msg").className = "error"; _("msg").innerText = "Incorrecta.";
+                }
+            }
+        }
+
+        function limpiar() {
+            if (!bloqueado) { _("clave").value = ""; _("msg").innerText = ""; _("clave").focus(); }
+        }
+    </script>
+</body>
+</html>
